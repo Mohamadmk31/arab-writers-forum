@@ -3,72 +3,1687 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منتدى الرابطة العربية للكُتّاب</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>منتدى الرابطة العربية للكُتّاب | المنصة الرسمية</title>
+    
+    <!-- الخطوط العربية الفاخرة -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- مكتبة الأيقونات -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        copper: {
+                            DEFAULT: '#C89B3C',
+                            light: '#DFB65B',
+                            dark: '#A67C24',
+                            glow: 'rgba(200, 155, 60, 0.35)'
+                        },
+                        darkBg: '#121212',
+                        darkCard: '#1D1D1D',
+                        darkHover: '#272727',
+                        lightBg: '#FFFFFF',
+                        lightCard: '#F5F5F5',
+                        lightText: '#222222'
+                    },
+                    fontFamily: {
+                        sans: ['Cairo', 'sans-serif'],
+                        serif: ['Amiri', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
-        body { font-family: system-ui, -apple-system, sans-serif; }
-        .gold-glow { text-shadow: 0 0 10px rgba(200, 155, 60, 0.7); }
+        /* تخصيص شريط التمرير */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #C89B3C;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #A67C24;
+        }
+
+        /* تأثيرات الرتب حسب المواصفات */
+        .rank-president {
+            color: #FFD700;
+            text-shadow: 0 0 8px rgba(255, 215, 0, 0.7), 0 0 15px rgba(200, 155, 60, 0.5);
+            font-weight: 800;
+        }
+        .rank-superadmin {
+            color: #E11D48; /* أحمر ملكي */
+            font-weight: 700;
+        }
+        .rank-admin {
+            color: #9333EA; /* بنفسجي */
+            font-weight: 700;
+        }
+        .rank-headmod {
+            color: #1D4ED8; /* أزرق داكن */
+            font-weight: 700;
+        }
+        .dark .rank-headmod {
+            color: #3B82F6;
+        }
+        .rank-mod {
+            color: #16A34A; /* أخضر */
+            font-weight: 600;
+        }
+        .rank-member {
+            color: inherit;
+            font-weight: 500;
+        }
+
+        /* حركات انتقال أنيقة وغير مبالغ بها */
+        .fade-in {
+            animation: fadeIn 0.25s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* موجة الصوت في الجلسات المباشرة */
+        .speaking-ring {
+            box-shadow: 0 0 0 3px #C89B3C, 0 0 12px rgba(200, 155, 60, 0.6);
+            animation: pulseRing 1.5s infinite;
+        }
+        @keyframes pulseRing {
+            0% { box-shadow: 0 0 0 2px rgba(200, 155, 60, 0.8); }
+            70% { box-shadow: 0 0 0 8px rgba(200, 155, 60, 0); }
+            100% { box-shadow: 0 0 0 2px rgba(200, 155, 60, 0); }
+        }
     </style>
 </head>
-<body class="bg-[#121212] text-white min-h-screen flex flex-col">
+<body class="bg-lightBg text-lightText dark:bg-darkBg dark:text-white font-sans transition-colors duration-200 min-h-screen flex flex-col overflow-x-hidden">
 
-    <!-- بوابة الدخول السريعة -->
-    <div id="loginModal" class="fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-4">
-        <div class="bg-[#1D1D1D] border border-[#C89B3C]/50 rounded-2xl max-w-md w-full p-6 text-center shadow-2xl">
-            <div class="w-16 h-16 bg-[#C89B3C]/20 text-[#C89B3C] rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
-                <i class="fa-solid fa-feather-pointed"></i>
-            </div>
-            <h2 class="text-2xl font-bold text-[#C89B3C] mb-1">الرابطة العربية للكُتّاب</h2>
-            <p class="text-gray-400 text-xs mb-6">منصة التواصل الأدبي الآمنة والمشفرة</p>
+    <!-- ==================== 1. شاشة تسجيل الدخول (Google OAuth2 فقط) ==================== -->
+    <div id="authModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 hidden">
+        <div class="bg-white dark:bg-darkCard border border-copper/40 rounded-2xl max-w-md w-full p-8 shadow-2xl fade-in relative">
+            <button onclick="toggleAuthModal(false)" class="absolute top-4 left-4 text-gray-400 hover:text-copper">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
             
-            <div class="space-y-3 text-right mb-6">
-                <div>
-                    <label class="text-xs text-gray-300 block mb-1">الاسم الظاهر</label>
-                    <input type="text" id="loginName" value="أديب الرابطة" class="w-full bg-[#121212] border border-white/15 rounded-lg px-4 py-2.5 text-sm text-white focus:border-[#C89B3C] focus:outline-none">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 mx-auto mb-3 rounded-full bg-copper/15 border border-copper flex items-center justify-center text-copper text-2xl">
+                    <i class="fa-solid fa-feather-pointed"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-copper">الرابطة العربية للكُتّاب</h2>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">بوابة الدخول الآمنة والمعتمدة للأعضاء</p>
+            </div>
+
+            <!-- الخطوة 1: Google Login فقط -->
+            <div id="googleStep1" class="space-y-4">
+                <div class="p-3 rounded-lg bg-copper/10 border border-copper/30 text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
+                    <i class="fa-solid fa-shield-halved text-copper ml-1"></i>
+                    تعتمد المنصة بروتوكول <strong>Google OAuth2</strong> حصرياً لضمان منع الحسابات المكررة وحماية الخصوصية دون الحاجة لرقم هاتف أو كلمات مرور.
+                </div>
+
+                <button onclick="simulateGoogleAuth()" class="w-full py-3 px-4 rounded-xl bg-white dark:bg-[#252525] border border-gray-300 dark:border-gray-700 hover:border-copper flex items-center justify-center gap-3 font-semibold shadow-sm transition-all">
+                    <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5" alt="Google">
+                    <span>المتابعة باستخدام حساب Google</span>
+                </button>
+            </div>
+
+            <!-- الخطوة 2: استكمال البيانات المطلوبة عند أول تسجيل -->
+            <form id="googleStep2" onsubmit="completeRegistration(event)" class="space-y-4 hidden">
+                <div class="text-xs text-copper font-semibold text-center mb-2">
+                    تم التحقق من البريد الإلكتروني بنجاح. يرجى إكمال ملفك الأدبي:
                 </div>
                 <div>
-                    <label class="text-xs text-gray-300 block mb-1">الدولة</label>
-                    <input type="text" id="loginCountry" value="سوريا" class="w-full bg-[#121212] border border-white/15 rounded-lg px-4 py-2.5 text-sm text-white focus:border-[#C89B3C] focus:outline-none">
+                    <label class="block text-xs font-semibold mb-1">الاسم الظاهر في المنتدى *</label>
+                    <input type="text" id="regName" required placeholder="مثال: طارق المنصور" class="w-full px-3.5 py-2.5 rounded-lg bg-lightCard dark:bg-darkBg border border-gray-300 dark:border-gray-700 focus:border-copper outline-none text-sm">
                 </div>
                 <div>
-                    <label class="text-xs text-gray-300 block mb-1">الرتبة / الصلاحية</label>
-                    <select id="loginRole" class="w-full bg-[#121212] border border-white/15 rounded-lg px-4 py-2.5 text-sm text-white focus:border-[#C89B3C] focus:outline-none">
-                        <option value="رئيس الموقع">رئيس الموقع (صلاحيات كاملة)</option>
-                        <option value="سوبر آدمن">سوبر آدمن</option>
-                        <option value="آدمن">آدمن</option>
-                        <option value="مشرف">مشرف</option>
-                        <option value="عضو">عضو</option>
+                    <label class="block text-xs font-semibold mb-1">البلد *</label>
+                    <select id="regCountry" required class="w-full px-3.5 py-2.5 rounded-lg bg-lightCard dark:bg-darkBg border border-gray-300 dark:border-gray-700 focus:border-copper outline-none text-sm">
+                        <option value="سوريا">سوريا</option>
+                        <option value="مصر">مصر</option>
+                        <option value="الأردن">الأردن</option>
+                        <option value="السعودية">السعودية</option>
+                        <option value="لبنان">لبنان</option>
+                        <option value="العراق">العراق</option>
+                        <option value="المغرب">المغرب</option>
+                        <option value="الإمارات">الإمارات</option>
+                        <option value="تونس">تونس</option>
+                        <option value="فلسطين">فلسطين</option>
                     </select>
                 </div>
-            </div>
-
-            <button type="button" onclick="enterForum()" class="w-full bg-[#C89B3C] text-[#121212] font-bold py-3 rounded-xl hover:opacity-90 active:scale-95 transition text-base cursor-pointer">
-                المتابعة والدخول للمنصة ←
-            </button>
+                <div>
+                    <label class="block text-xs font-semibold mb-1">رابط الصورة الشخصية (اختياري)</label>
+                    <input type="url" id="regAvatar" placeholder="https://..." class="w-full px-3.5 py-2.5 rounded-lg bg-lightCard dark:bg-darkBg border border-gray-300 dark:border-gray-700 focus:border-copper outline-none text-sm">
+                </div>
+                <button type="submit" class="w-full py-2.5 rounded-xl bg-copper hover:bg-copper-dark text-darkBg font-bold transition">
+                    دخول المنصة
+                </button>
+            </form>
         </div>
     </div>
 
-    <!-- الشريط العلوي -->
-    <header class="bg-[#1D1D1D] border-b border-[#C89B3C]/25 sticky top-0 z-40 px-4 py-3 flex flex-wrap justify-between items-center gap-3">
-        <div class="flex items-center gap-2.5">
-            <span class="text-[#C89B3C] text-2xl"><i class="fa-solid fa-feather-pointed"></i></span>
-            <div>
-                <h1 class="font-bold text-base leading-tight">الرابطة العربية للكُتّاب</h1>
-                <span class="text-[10px] text-green-400">● اتصال مشفر E2EE</span>
+    <!-- ==================== 2. الشريط العلوي (Header) ==================== -->
+    <header class="sticky top-0 z-40 bg-white/95 dark:bg-darkCard/95 backdrop-blur border-b border-gray-200 dark:border-gray-800 px-4 lg:px-6 h-16 flex items-center justify-between">
+        <!-- الشعار والقائمة للموبايل -->
+        <div class="flex items-center gap-3">
+            <button onclick="toggleMobileSidebar()" class="lg:hidden p-2 rounded-lg hover:bg-lightCard dark:hover:bg-darkHover text-copper">
+                <i class="fa-solid fa-bars text-xl"></i>
+            </button>
+            <div class="flex items-center gap-2.5 cursor-pointer" onclick="switchView('forum')">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-copper to-copper-dark flex items-center justify-center text-darkBg shadow-md">
+                    <i class="fa-solid fa-feather-pointed text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-base sm:text-lg leading-tight tracking-wide">الرابطة العربية للكُتّاب</h1>
+                    <span class="text-[11px] text-copper font-medium hidden sm:inline-block">المنصة الأدبية التفاعلية</span>
+                </div>
             </div>
         </div>
 
-        <!-- أزرار التنقل -->
-        <nav class="flex flex-wrap items-center gap-1.5 bg-black/30 p-1 rounded-xl">
-            <button type="button" onclick="showSection('rooms')" id="btn-rooms" class="nav-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-[#C89B3C] text-[#121212]">الغرف (6)</button>
-            <button type="button" onclick="showSection('library')" id="btn-library" class="nav-btn px-3 py-1.5 rounded-lg text-xs font-medium text-gray-300 hover:bg-white/10">المكتبة الأدبية</button>
-            <button type="button" onclick="showSection('voice')" id="btn-voice" class="nav-btn px-3 py-1.5 rounded-lg text-xs font-medium text-gray-300 hover:bg-white/10">الجلسات الصوتية</button>
-            <button type="button" onclick="showSection('tickets')" id="btn-tickets" class="nav-btn px-3 py-1.5 rounded-lg text-xs font-medium text-gray-300 hover:bg-white/10">الشكاوى</button>
-            <button type="button" onclick="showSection('admin')" id="btn-admin" class="nav-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-red-600/20 text-red-400 border border-red-500/40">⚙️ لوحة الإدارة</button>
+        <!-- شريط التنقل المركزي -->
+        <nav class="hidden md:flex items-center gap-1 bg-lightCard dark:bg-darkBg p-1 rounded-xl border border-gray-200 dark:border-gray-800">
+            <button onclick="switchView('forum')" id="nav-forum" class="nav-btn px-4 py-1.5 rounded-lg text-sm font-semibold bg-copper text-darkBg transition">
+                <i class="fa-solid fa-comments ml-1.5"></i>القاعات والحوار
+            </button>
+            <button onclick="switchView('library')" id="nav-library" class="nav-btn px-4 py-1.5 rounded-lg text-sm font-semibold text-gray-600 dark:text-gray-300 hover:text-copper transition">
+                <i class="fa-solid fa-book-open ml-1.5"></i>المكتبة الأدبية
+            </button>
+            <button onclick="switchView('voice')" id="nav-voice" class="nav-btn px-4 py-1.5 rounded-lg text-sm font-semibold text-gray-600 dark:text-gray-300 hover:text-copper transition flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
+                <span>الجلسات الصوتية</span>
+            </button>
+            <button onclick="switchView('admin')" id="nav-admin" class="nav-btn px-4 py-1.5 rounded-lg text-sm font-semibold text-gray-600 dark:text-gray-300 hover:text-copper transition">
+                <i class="fa-solid fa-shield-halved ml-1.5"></i>لوحة الإدارة
+            </button>
         </nav>
 
-        <!-- معلومات العضو -->
-        <div class="flex items-center gap-2">
-            <button type="button" onclick="toggleTheme()" class="w-8 h-8 rounded-full bg-white/10 text-[#C89B3C] flex items-center justify-center">🌓</button>
-            <button type="button" onclick="document.getElementById('loginModal').style.display='flex'"
+        <!-- أدوات التحكم والحساب -->
+        <div class="flex items-center gap-2 sm:gap-3">
+            <!-- زر تبديل الدور للمعاينة (رئيس الموقع / عضو) -->
+            <button onclick="toggleRoleDemo()" title="تبديل الصلاحية لمعاينة الفرق" class="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-copper/40 bg-copper/10 text-copper text-xs font-semibold hover:bg-copper/20 transition">
+                <i class="fa-solid fa-user-gear"></i>
+                <span id="roleSwitchLabel">وضع: رئيس الموقع</span>
+            </button>
+
+            <!-- زر دائم: تقديم شكوى / اقتراح (البند الثامن) -->
+            <button onclick="openModal('reportModal')" class="px-3 py-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/30 text-xs font-bold flex items-center gap-1.5 transition">
+                <i class="fa-solid fa-flag"></i>
+                <span class="hidden sm:inline">شكوى / اقتراح</span>
+            </button>
+
+            <!-- جرس الإشعارات (البند الثاني عشر) -->
+            <div class="relative">
+                <button onclick="toggleDropdown('notifDropdown')" class="w-9 h-9 rounded-lg bg-lightCard dark:bg-darkBg border border-gray-200 dark:border-gray-800 hover:border-copper flex items-center justify-center relative transition">
+                    <i class="fa-solid fa-bell text-gray-600 dark:text-gray-300"></i>
+                    <span id="notifBadge" class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-copper text-darkBg text-[10px] font-bold flex items-center justify-center">4</span>
+                </button>
+                <!-- قائمة الإشعارات -->
+                <div id="notifDropdown" class="hidden absolute left-0 mt-2 w-80 bg-white dark:bg-darkCard border border-gray-200 dark:border-gray-800 rounded-xl shadow-2xl p-3 z-50 fade-in">
+                    <div class="flex items-center justify-between pb-2 mb-2 border-b border-gray-200 dark:border-gray-800">
+                        <span class="font-bold text-sm text-copper">الإشعارات الفورية</span>
+                        <button onclick="clearNotifications()" class="text-[11px] text-gray-400 hover:text-copper">تحديد الكل كمقروء</button>
+                    </div>
+                    <div id="notifList" class="space-y-2 max-h-64 overflow-y-auto text-xs">
+                        <!-- يتم تعبئتها برمجياً -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- زر الوضع الليلي / النهاري -->
+            <button onclick="toggleTheme()" title="تبديل المظهر" class="w-9 h-9 rounded-lg bg-lightCard dark:bg-darkBg border border-gray-200 dark:border-gray-800 hover:border-copper flex items-center justify-center text-copper transition">
+                <i id="themeIcon" class="fa-solid fa-sun"></i>
+            </button>
+
+            <!-- الملف الشخصي المصغر -->
+            <div onclick="openProfileModal(currentUser.id)" class="flex items-center gap-2 cursor-pointer pl-1 pr-2 py-1 rounded-xl hover:bg-lightCard dark:hover:bg-darkBg border border-transparent hover:border-copper/40 transition">
+                <img id="headerAvatar" src="https://ui-avatars.com/api/?name=محمد+عقاد&background=C89B3C&color=121212&bold=true" class="w-8 h-8 rounded-full object-cover border border-copper" alt="Avatar">
+                <div class="hidden xl:block text-right">
+                    <div id="headerUserName" class="text-xs font-bold rank-president">محمد عقاد</div>
+                    <div id="headerUserRank" class="text-[10px] text-gray-400">رئيس الموقع</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- شريط تنقل الموبايل السفلي -->
+    <div class="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white dark:bg-darkCard border-t border-gray-200 dark:border-gray-800 flex justify-around py-2">
+        <button onclick="switchView('forum')" class="flex flex-col items-center text-xs text-copper">
+            <i class="fa-solid fa-comments text-base mb-0.5"></i><span>القاعات</span>
+        </button>
+        <button onclick="switchView('library')" class="flex flex-col items-center text-xs text-gray-400">
+            <i class="fa-solid fa-book-open text-base mb-0.5"></i><span>المكتبة</span>
+        </button>
+        <button onclick="switchView('voice')" class="flex flex-col items-center text-xs text-gray-400">
+            <i class="fa-solid fa-microphone-lines text-base mb-0.5"></i><span>الصوتية</span>
+        </button>
+        <button onclick="switchView('admin')" class="flex flex-col items-center text-xs text-gray-400">
+            <i class="fa-solid fa-shield-halved text-base mb-0.5"></i><span>الإدارة</span>
+        </button>
+    </div>
+
+    <!-- ==================== 3. شريط الإعلانات العلوي (4 بطاقات مميزة - البند الثاني) ==================== -->
+    <section class="bg-lightCard/60 dark:bg-[#161616] border-b border-gray-200 dark:border-gray-800/80 px-4 lg:px-6 py-3">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center gap-2 text-xs font-bold text-copper">
+                    <i class="fa-solid fa-bullhorn"></i>
+                    <span>لوحة الإعلانات والفعاليات الرسمية</span>
+                </div>
+                <button id="editAnnouncementsBtn" onclick="openModal('announcementModal')" class="text-[11px] px-2.5 py-1 rounded bg-copper/15 text-copper hover:bg-copper hover:text-darkBg font-semibold transition">
+                    <i class="fa-solid fa-pen-to-square ml-1"></i>إدارة الإعلانات
+                </button>
+            </div>
+            
+            <div id="announcementsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                <!-- يتم توليد البطاقات الأربع ديناميكياً -->
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== 4. الحاوية الرئيسية للتطبيق ==================== -->
+    <main class="flex-1 max-w-7xl w-full mx-auto flex relative pb-16 md:pb-0">
+        
+        <!-- القائمة الجانبية: غرف المنتدى والدردشة (البند الخامس) + الرسائل الخاصة المشفرة (البند السابع) -->
+        <aside id="sidebar" class="w-72 bg-white dark:bg-darkCard border-l border-gray-200 dark:border-gray-800 flex-shrink-0 flex flex-col justify-between fixed lg:static inset-y-0 right-0 z-30 transform translate-x-full lg:translate-x-0 transition-transform duration-200 pt-16 lg:pt-0">
+            <div class="p-4 overflow-y-auto space-y-6">
+                <!-- قسم القاعات الأدبية -->
+                <div>
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-gray-400">قاعات المنتدى والحوار</h3>
+                        <button id="addRoomBtn" onclick="openModal('newRoomModal')" title="إضافة قاعة جديدة" class="w-6 h-6 rounded bg-copper/15 text-copper hover:bg-copper hover:text-darkBg flex items-center justify-center text-xs transition">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+                    </div>
+                    <ul id="roomsList" class="space-y-1">
+                        <!-- القاعات الست الافتراضية + القاعات المضافة -->
+                    </ul>
+                </div>
+
+                <!-- قسم المراسلات الخاصة المشفرة E2EE (البند السابع) -->
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-gray-400">المراسلات الخاصة</h3>
+                        <span title="مشفرة بالكامل من طرف إلى طرف - لا يمكن للإدارة أو المطورين قراءتها" class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-500 border border-emerald-500/30">
+                            <i class="fa-solid fa-lock ml-0.5"></i>E2EE
+                        </span>
+                    </div>
+                    <ul id="dmList" class="space-y-1">
+                        <!-- قائمة المحادثات الخاصة -->
+                    </ul>
+                </div>
+            </div>
+
+            <!-- إحصائية سريعة أسفل القائمة -->
+            <div class="p-4 border-t border-gray-200 dark:border-gray-800 bg-lightCard/50 dark:bg-darkBg/50 text-xs">
+                <div class="flex items-center justify-between text-gray-500 dark:text-gray-400 mb-1">
+                    <span>المتصلون الآن:</span>
+                    <span class="text-emerald-500 font-bold flex items-center gap-1">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span> 142 كاتباً
+                    </span>
+                </div>
+                <div class="text-[11px] text-gray-400 flex items-center gap-1">
+                    <i class="fa-solid fa-shield-check text-copper"></i>
+                    <span>اتصال محمي ومشفر بالكامل</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ==================== الواجهة أ: قاعات المنتدى والدردشة الفورية ==================== -->
+        <section id="view-forum" class="flex-1 flex flex-col min-w-0 bg-lightBg dark:bg-darkBg">
+            <!-- رأس القاعة النشطة -->
+            <div class="px-5 py-3.5 border-b border-gray-200 dark:border-gray-800 bg-white/60 dark:bg-darkCard/60 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div id="activeRoomIcon" class="w-10 h-10 rounded-xl bg-copper/15 border border-copper/40 text-copper flex items-center justify-center text-lg">
+                        <i class="fa-solid fa-landmark"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h2 id="activeRoomTitle" class="font-bold text-base sm:text-lg">القاعة العامة</h2>
+                            <span id="e2eeRoomBadge" class="hidden text-[11px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-500 border border-emerald-500/30">
+                                <i class="fa-solid fa-user-secret ml-1"></i>محادثة خاصة مشفرة (لا تملك الإدارة صلاحية الاطلاع عليها)
+                            </span>
+                        </div>
+                        <p id="activeRoomDesc" class="text-xs text-gray-500 dark:text-gray-400">الملتقى الجامع لأعضاء الرابطة العربية للكُتّاب والنقاشات الأدبية العامة</p>
+                    </div>
+                </div>
+
+                <!-- شريط الرسالة المثبتة في القاعة -->
+                <div class="hidden xl:flex items-center gap-2 max-w-md px-3 py-1.5 rounded-lg bg-copper/10 border border-copper/30 text-xs">
+                    <i class="fa-solid fa-thumbtack text-copper"></i>
+                    <span id="pinnedMessageText" class="truncate text-gray-700 dark:text-gray-200">مرحباً بكم في القاعة العامة، نرجو الالتزام بميثاق الرابطة الأدبي.</span>
+                </div>
+            </div>
+
+            <!-- منطقة عرض الرسائل -->
+            <div id="messagesContainer" class="flex-1 p-4 sm:p-6 overflow-y-auto space-y-4 max-h-[calc(100vh-310px)]">
+                <!-- الرسائل تُعرض هنا ديناميكياً -->
+            </div>
+
+            <!-- شريط الرد على رسالة محددة (يظهر عند الضغط على رد) -->
+            <div id="replyPreviewBar" class="hidden px-5 py-2 bg-copper/10 border-t border-copper/30 flex items-center justify-between text-xs">
+                <div class="flex items-center gap-2 truncate">
+                    <i class="fa-solid fa-reply text-copper"></i>
+                    <span>الرد على <strong id="replyTargetUser" class="text-copper"></strong>:</span>
+                    <span id="replyTargetText" class="text-gray-500 dark:text-gray-300 truncate max-w-md"></span>
+                </div>
+                <button onclick="cancelReply()" class="text-gray-400 hover:text-red-500"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <!-- صندوق إرسال الرسائل المتكامل (البند السادس والثالث عشر والرابع عشر) -->
+            <div class="p-3 sm:p-4 bg-white dark:bg-darkCard border-t border-gray-200 dark:border-gray-800 relative">
+                <!-- قائمة الإشارة السريعة @ (البند الثالث عشر) -->
+                <div id="mentionPopup" class="hidden absolute bottom-20 right-6 w-64 bg-white dark:bg-darkCard border border-copper/50 rounded-xl shadow-xl p-2 z-30">
+                    <div class="text-[10px] text-gray-400 px-2 pb-1">اختر عضواً للإشارة إليه:</div>
+                    <div id="mentionList" class="space-y-1 max-h-40 overflow-y-auto text-xs"></div>
+                </div>
+
+                <!-- لوحة الإيموجي والملصقات -->
+                <div id="emojiPicker" class="hidden absolute bottom-20 left-6 bg-white dark:bg-darkCard border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl p-3 z-30 w-64">
+                    <div class="text-xs font-bold text-copper mb-2">الرموز التعبيرية والأدبية</div>
+                    <div class="grid grid-cols-6 gap-2 text-lg text-center">
+                        <button type="button" onclick="insertEmoji('✍️')" class="hover:bg-copper/20 rounded p-1">✍️</button>
+                        <button type="button" onclick="insertEmoji('📜')" class="hover:bg-copper/20 rounded p-1">📜</button>
+                        <button type="button" onclick="insertEmoji('📚')" class="hover:bg-copper/20 rounded p-1">📚</button>
+                        <button type="button" onclick="insertEmoji('🖋️')" class="hover:bg-copper/20 rounded p-1">🖋️</button>
+                        <button type="button" onclick="insertEmoji('✨')" class="hover:bg-copper/20 rounded p-1">✨</button>
+                        <button type="button" onclick="insertEmoji('👏')" class="hover:bg-copper/20 rounded p-1">👏</button>
+                        <button type="button" onclick="insertEmoji('❤️')" class="hover:bg-copper/20 rounded p-1">❤️</button>
+                        <button type="button" onclick="insertEmoji('🔥')" class="hover:bg-copper/20 rounded p-1">🔥</button>
+                        <button type="button" onclick="insertEmoji('🌹')" class="hover:bg-copper/20 rounded p-1">🌹</button>
+                        <button type="button" onclick="insertEmoji('☕')" class="hover:bg-copper/20 rounded p-1">☕</button>
+                        <button type="button" onclick="insertEmoji('💡')" class="hover:bg-copper/20 rounded p-1">💡</button>
+                        <button type="button" onclick="insertEmoji('🏆')" class="hover:bg-copper/20 rounded p-1">🏆</button>
+                    </div>
+                </div>
+
+                <form onsubmit="sendMessage(event)" class="flex items-center gap-2">
+                    <!-- أزرار المرفقات (صور، ملفات PDF، صوت) -->
+                    <div class="flex items-center gap-1 text-gray-500 dark:text-gray-400">
+                        <label title="إرفاق صورة أو ملف أدبي (PDF/DOCX)" class="w-9 h-9 rounded-lg hover:bg-lightCard dark:hover:bg-darkHover hover:text-copper flex items-center justify-center cursor-pointer transition">
+                            <i class="fa-solid fa-paperclip"></i>
+                            <input type="file" id="fileAttachment" class="hidden" onchange="handleFileSelect(event)">
+                        </label>
+                        <button type="button" onclick="simulateVoiceNote()" title="إرسال رسالة صوتية" class="w-9 h-9 rounded-lg hover:bg-lightCard dark:hover:bg-darkHover hover:text-copper flex items-center justify-center transition">
+                            <i class="fa-solid fa-microphone"></i>
+                        </button>
+                        <button type="button" onclick="toggleDropdown('emojiPicker')" title="إيموجي وملصقات" class="w-9 h-9 rounded-lg hover:bg-lightCard dark:hover:bg-darkHover hover:text-copper flex items-center justify-center transition">
+                            <i class="fa-regular fa-face-smile"></i>
+                        </button>
+                    </div>
+
+                    <div class="flex-1 relative">
+                        <input type="text" id="messageInput" onkeyup="handleInputKeyup(event)" placeholder="اكتب مشاركتك الأدبية هنا... (استخدم @ للإشارة لعضو)" class="w-full px-4 py-2.5 rounded-xl bg-lightCard dark:bg-darkBg border border-gray-200 dark:border-gray-700 focus:border-copper outline-none text-sm">
+                        <span id="attachedFileBadge" class="hidden absolute left-3 top-2 text-[11px] bg-copper text-darkBg font-bold px-2 py-0.5 rounded"></span>
+                    </div>
+
+                    <button type="submit" class="px-5 py-2.5 rounded-xl bg-copper hover:bg-copper-dark text-darkBg font-bold text-sm flex items-center gap-2 transition shadow-sm">
+                        <span>إرسال</span>
+                        <i class="fa-solid fa-paper-plane-top rotate-180"></i>
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- ==================== الواجهة ب: المكتبة الأدبية (البند السابع عشر) ==================== -->
+        <section id="view-library" class="hidden flex-1 p-5 sm:p-8 overflow-y-auto space-y-6 fade-in">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-200 dark:border-gray-800 pb-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-copper flex items-center gap-2">
+                        <i class="fa-solid fa-book-bookmark"></i>
+                        <span>المكتبة الأدبية للرابطة</span>
+                    </h2>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">مساحة موثقة لنشر الروايات، الدواوين الشعرية، القصص، والدراسات النقدية</p>
+                </div>
+                <button onclick="openModal('publishBookModal')" class="px-4 py-2.5 rounded-xl bg-copper hover:bg-copper-dark text-darkBg font-bold text-sm flex items-center gap-2 self-start transition">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                    <span>رفع عمل أدبي جديد</span>
+                </button>
+            </div>
+
+            <!-- شريط البحث والتصنيف -->
+            <div class="flex flex-col sm:flex-row gap-3">
+                <div class="flex-1 relative">
+                    <i class="fa-solid fa-magnifying-glass absolute right-3.5 top-3 text-gray-400 text-sm"></i>
+                    <input type="text" id="librarySearch" onkeyup="renderLibrary()" placeholder="ابحث بعنوان العمل أو اسم المؤلف..." class="w-full pr-10 pl-4 py-2 rounded-xl bg-white dark:bg-darkCard border border-gray-200 dark:border-gray-800 focus:border-copper outline-none text-sm">
+                </div>
+                <select id="libraryCategoryFilter" onchange="renderLibrary()" class="px-4 py-2 rounded-xl bg-white dark:bg-darkCard border border-gray-200 dark:border-gray-800 focus:border-copper outline-none text-sm">
+                    <option value="all">جميع التصنيفات الأدبية</option>
+                    <option value="رواية">روايات</option>
+                    <option value="ديوان شعري">دواوين شعرية</option>
+                    <option value="قصة قصيرة">قصص قصيرة</option>
+                    <option value="مقال نقدي">مقالات ودراسات نقدية</option>
+                </select>
+            </div>
+
+            <!-- شبكة الكتب والأعمال -->
+            <div id="libraryGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                <!-- تُعرض الأعمال هنا -->
+            </div>
+        </section>
+
+        <!-- ==================== الواجهة ج: الجلسات الصوتية المباشرة (البند التاسع عشر) ==================== -->
+        <section id="view-voice" class="hidden flex-1 p-5 sm:p-8 overflow-y-auto space-y-6 fade-in">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-200 dark:border-gray-800 pb-4">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="px-2.5 py-0.5 rounded-full bg-red-500/15 text-red-500 text-xs font-bold flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span> بث مباشر
+                        </span>
+                        <h2 class="text-xl sm:text-2xl font-bold">ورشة: بناء الحبكة الدرامية في الرواية العربية</h2>
+                    </div>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">قاعة الورش التدريبية الصوتية • بإشراف هيئة التدريب والورش التطبيقية</p>
+                </div>
+
+                <!-- أزرار التحكم الإداري في التسجيل -->
+                <div class="flex items-center gap-2">
+                    <button id="recordSessionBtn" onclick="toggleRecording()" class="px-3.5 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold flex items-center gap-2 transition">
+                        <i class="fa-solid fa-record-vinyl"></i>
+                        <span id="recordBtnText">بدء تسجيل الجلسة</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- منصة المتحدثين (Stage) -->
+            <div class="bg-white dark:bg-darkCard border border-copper/30 rounded-2xl p-6">
+                <h3 class="text-xs font-bold text-copper uppercase tracking-wider mb-4">منصة المحاضرين والمتحدثين</h3>
+                <div id="speakersGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
+                    <!-- المتحدثون -->
+                </div>
+            </div>
+
+            <!-- المستمعون وطالبو المداخلة -->
+            <div class="bg-white dark:bg-darkCard border border-gray-200 dark:border-gray-800 rounded-2xl p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">الحضور في القاعة الصوتية (28 مستمعاً)</h3>
+                    <span id="handRaisedStatus" class="text-xs text-copper font-semibold hidden">
+                        <i class="fa-solid fa-hand ml-1"></i>تم إرسال طلب المداخلة للمشرف
+                    </span>
+                </div>
+                <div id="listenersGrid" class="grid grid-cols-3 sm:grid-cols-6 gap-4 text-center">
+                    <!-- المستمعون -->
+                </div>
+            </div>
+
+            <!-- شريط أدوات الجلسة الصوتية -->
+            <div class="bg-white dark:bg-darkCard border border-gray-200 dark:border-gray-800 rounded-2xl p-4 flex flex-wrap items-center justify-center gap-4">
+                <button onclick="toggleMic()" id="micToggleBtn" class="px-5 py-2.5 rounded-xl bg-lightCard dark:bg-darkBg hover:border-copper border border-gray-300 dark:border-gray-700 font-semibold text-sm flex items-center gap-2 transition">
+                    <i id="micIcon" class="fa-solid fa-microphone-slash text-red-500"></i>
+                    <span id="micLabel">الميكروفون مكتوم</span>
+                </button>
+                <button onclick="toggleRaiseHand()" id="raiseHandBtn" class="px-5 py-2.5 rounded-xl bg-copper/15 text-copper hover:bg-copper hover:text-darkBg border border-copper/40 font-bold text-sm flex items-center gap-2 transition">
+                    <i class="fa-solid fa-hand"></i>
+                    <span>رفع اليد للمداخلة</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- ==================== الواجهة د: لوحة الإدارة المتكاملة (البند السادس عشر) ==================== -->
+        <section id="view-admin" class="hidden flex-1 p-5 sm:p-8 overflow-y-auto space-y-6 fade-in">
+            <div class="border-b border-gray-200 dark:border-gray-800 pb-4 flex items-center justify-between">
+                <div>
+                    <h2 class="text-2xl font-bold text-copper flex items-center gap-2">
+                        <i class="fa-solid fa-crown"></i>
+                        <span>لوحة الإدارة والتحكم المركزي</span>
+                    </h2>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">إدارة الأعضاء، الرتب، الإحصائيات الحية، وتذاكر الشكاوى والاقتراحات</p>
+                </div>
+                <span class="text-xs px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-500 border border-emerald-500/30 font-semibold">
+                    <i class="fa-solid fa-shield-halved ml-1"></i>WAF & Anti-DDoS Active
+                </span>
+            </div>
+
+            <!-- بطاقات الإحصائيات (البند السادس عشر) -->
+            <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
+                <div class="bg-white dark:bg-darkCard p-4 rounded-xl border border-gray-200 dark:border-gray-800">
+                    <div class="text-xs text-gray-400">إجمالي الأعضاء</div>
+                    <div class="text-2xl font-bold text-copper mt-1">1,284</div>
+                </div>
+                <div class="bg-white dark:bg-darkCard p-4 rounded-xl border border-gray-200 dark:border-gray-800">
+                    <div class="text-xs text-gray-400">إجمالي الرسائل</div>
+                    <div class="text-2xl font-bold mt-1">48,920</div>
+                </div>
+                <div class="bg-white dark:bg-darkCard p-4 rounded-xl border border-gray-200 dark:border-gray-800">
+                    <div class="text-xs text-gray-400">الزوار اليوم</div>
+                    <div class="text-2xl font-bold mt-1">3,410</div>
+                </div>
+                <div class="bg-white dark:bg-darkCard p-4 rounded-xl border border-gray-200 dark:border-gray-800">
+                    <div class="text-xs text-gray-400">المتصلون حالياً</div>
+                    <div class="text-2xl font-bold text-emerald-500 mt-1">142</div>
+                </div>
+                <div class="bg-white dark:bg-darkCard p-4 rounded-xl border border-gray-200 dark:border-gray-800 col-span-2 lg:col-span-1">
+                    <div class="text-xs text-gray-400">أكثر القاعات نشاطاً</div>
+                    <div class="text-base font-bold text-copper mt-2">قاعة الشعر</div>
+                </div>
+            </div>
+
+            <!-- إدارة المستخدمين والرتب (البند التاسع والعاشر والسادس عشر) -->
+            <div class="bg-white dark:bg-darkCard rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
+                <div class="p-4 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between">
+                    <h3 class="font-bold text-sm">إدارة الأعضاء والرتب الإدارية</h3>
+                    <span class="text-[11px] text-gray-400">منح الرتب الإدارية حصري لرئيس الموقع والسوبر آدمن</span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-right text-xs">
+                        <thead class="bg-lightCard dark:bg-darkBg text-gray-500 dark:text-gray-400">
+                            <tr>
+                                <th class="p-3">العضو</th>
+                                <th class="p-3">الدولة</th>
+                                <th class="p-3">الرتبة الحالية</th>
+                                <th class="p-3">ساعات النشاط</th>
+                                <th class="p-3">تعديل الرتبة / الإجراء</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminUsersTable" class="divide-y divide-gray-200 dark:divide-gray-800">
+                            <!-- صفوف الأعضاء -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- إدارة تذاكر الشكاوى والاقتراحات (البند السابع والثامن) -->
+            <div class="bg-white dark:bg-darkCard rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
+                <div class="p-4 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between">
+                    <h3 class="font-bold text-sm">سجل الشكاوى والاقتراحات (المعالجة حصراً عبر الأدلة المرفوعة)</h3>
+                </div>
+                <div id="ticketsList" class="p-4 space-y-3">
+                    <!-- التذاكر -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ==================== النوافذ المنبثقة (Modals) ==================== -->
+
+    <!-- 1. نافذة الملف الشخصي الكامل (البند الرابع والثامن عشر) -->
+    <div id="profileModal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-white dark:bg-darkCard border border-copper/40 rounded-2xl max-w-lg w-full p-6 shadow-2xl fade-in relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeModal('profileModal')" class="absolute top-4 left-4 text-gray-400 hover:text-copper">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            <div id="profileModalContent"></div>
+        </div>
+    </div>
+
+    <!-- 2. نافذة تقديم شكوى أو اقتراح (البند الثامن) -->
+    <div id="reportModal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-white dark:bg-darkCard border border-copper/40 rounded-2xl max-w-md w-full p-6 shadow-2xl fade-in relative">
+            <button onclick="closeModal('reportModal')" class="absolute top-4 left-4 text-gray-400 hover:text-copper">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            <h3 class="text-lg font-bold text-copper mb-1">تقديم شكوى أو اقتراح</h3>
+            <p class="text-xs text-gray-400 mb-4">تُعامل البلاغات بسرية تامة وفق سياسة الخصوصية</p>
+            
+            <form onsubmit="submitTicket(event)" class="space-y-3 text-xs">
+                <div>
+                    <label class="block font-bold mb-1">نوع الطلب</label>
+                    <select id="ticketType" onchange="toggleComplaintFields()" class="w-full p-2.5 rounded-lg bg-lightCard dark:bg-darkBg border border-gray-300 dark:border-gray-700 outline-none">
+                        <option value="شكوى">تقديم شكوى ضد مخالفة</option>
+                        <option value="اقتراح تطوير">اقتراح تطوير أو فكرة جديدة</option>
+                    </select>
+                </div>
+                <div id="accusedField">
+                    <label class="block font-bold mb-1">اسم المشتكى عليه</label>
+                    <input type="text" id="ticketAccused" placeholder="اكتب اسم العضو..." class="w-full p-2.5 rounded-lg bg-lightCard dark:bg-darkBg border border-gray-300 dark:border-gray-700 outline-none">
+                </div>
+                <div>
+                    <label class="block font-bold mb-1">وصف المشكلة أو الاقتراح *</label>
+                    <textarea id="ticketDesc" required rows="3" placeholder="اشرح التفاصيل بوضوح..." class="w-full p-2.5 rounded-lg bg-lightCard dark:bg-darkBg border border-gray-300 dark:border-gray-700 outline-none"></textarea>
+                </div>
+                <div id="evidenceField">
+                    <label class="block font-bold mb-1">رفع الأدلة (لقطة شاشة أو رسالة موقعة)</label>
+                    <input type="file" id="ticketEvidence" class="w-full p-2 rounded-lg bg-lightCard dark:bg-darkBg border border-gray-300 dark:border-gray-700">
+                </div>
+                <button type="submit" class="w-full py-2.5 rounded-xl bg-copper hover:bg-copper-dark text-darkBg font-bold text-sm transition">
+                    إرسال التذكرة للإدارة
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 3. نافذة إضافة عمل للمكتبة الأدبية -->
+    <div id="publishBookModal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-white dark:bg-darkCard border border-copper/40 rounded-2xl max-w-md w-full p-6 shadow-2xl fade-in relative">
+            <button onclick="closeModal('publishBookModal')" class="absolute top-4 left-4 text-gray-400 hover:text-copper">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            <h3 class="text-lg font-bold text-copper mb-4">نشر عمل في المكتبة الأدبية</h3>
+            <form onsubmit="publishNewWork(event)" class="space-y-3 text-xs">
+                <div>
+                    <label class="block font-bold mb-1">عنوان العمل الأدبي *</label>
+                    <input type="text" id="workTitle" required class="w-full p-2.5 rounded-lg bg-lightCard dark:bg-darkBg border border-gray-300 dark:border-gray-700 outline-none">
+                </div>
+                <div>
+                    <label class="block font-bold mb-1">التصنيف *</label>
+                    <select id="workCategory" class="w-full p-2.5 rounded-lg bg-lightCard dark:bg-darkBg border border-gray-300 dark:border-gray-700 outline-none">
+                        <option value="رواية">رواية</option>
+                        <option value="ديوان شعري">ديوان شعري</option>
+                        <option value="قصة قصيرة">قصة قصيرة</option>
+                        <option value="مقال نقدي">مقال نقدي</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block font-bold mb-1">نبذة عن العمل *</label>
+                    <textarea id="workSummary" required rows="3" class="w-full p-2.5 rounded-lg bg-lightCard dark:bg-darkBg border border-gray-300 dark:border-gray-700 outline-none"></textarea>
+                </div>
+                <button type="submit" class="w-full py-2.5 rounded-xl bg-copper hover:bg-copper-dark text-darkBg font-bold text-sm">
+                    نشر في المكتبة
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 4. نافذة إنشاء قاعة جديدة -->
+    <div id="newRoomModal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-white dark:bg-darkCard border border-copper/40 rounded-2xl max-w-sm w-full p-6 shadow-2xl fade-in relative">
+            <button onclick="closeModal('newRoomModal')" class="absolute top-4 left-4 text-gray-400 hover:text-copper">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            <h3 class="text-lg font-bold text-copper mb-4">إنشاء قاعة حوار جديدة</h3>
+            <form onsubmit="createNewRoom(event)" class="space-y-3 text-xs">
+                <div>
+                    <label class="block font-bold mb-1">اسم القاعة *</label>
+                    <input type="text" id="newRoomName" required placeholder="مثال: قاعة المسرح الأدبي" class="w-full p-2.5 rounded-lg bg-lightCard dark:bg-darkBg border border-gray-300 dark:border-gray-700 outline-none">
+                </div>
+                <div>
+                    <label class="block font-bold mb-1">وصف القاعة *</label>
+                    <input type="text" id="newRoomDesc" required placeholder="وصف مختصر لاختصاص القاعة..." class="w-full p-2.5 rounded-lg bg-lightCard dark:bg-darkBg border border-gray-300 dark:border-gray-700 outline-none">
+                </div>
+                <button type="submit" class="w-full py-2.5 rounded-xl bg-copper hover:bg-copper-dark text-darkBg font-bold text-sm">
+                    إنشاء القاعة
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 5. نافذة تعديل الإعلانات العلوية -->
+    <div id="announcementModal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-white dark:bg-darkCard border border-copper/40 rounded-2xl max-w-md w-full p-6 shadow-2xl fade-in relative">
+            <button onclick="closeModal('announcementModal')" class="absolute top-4 left-4 text-gray-400 hover:text-copper">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            <h3 class="text-lg font-bold text-copper mb-4">إدارة شريط الإعلانات العلوي</h3>
+            <form onsubmit="updateAnnouncement(event)" class="space-y-3 text-xs">
+                <div>
+                    <label class="block font-bold mb-1">اختر البطاقة</label>
+                    <select id="annSelect" onchange="loadAnnouncementToForm()" class="w-full p-2.5 rounded-lg bg-lightCard dark:bg-darkBg border border-gray-300 dark:border-gray-700 outline-none">
+                        <option value="0">1. أبرز الفعاليات</option>
+                        <option value="1">2. آخر الأخبار</option>
+                        <option value="2">3. المسابقات</option>
+                        <option value="3">4. الإعلانات الرسمية</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block font-bold mb-1">العنوان</label>
+                    <input type="text" id="annTitleInput" required class="w-full p-2.5 rounded-lg bg-lightCard dark:bg-darkBg border border-gray-300 dark:border-gray-700 outline-none">
+                </div>
+                <div>
+                    <label class="block font-bold mb-1">المحتوى المختصر</label>
+                    <input type="text" id="annTextInput" required class="w-full p-2.5 rounded-lg bg-lightCard dark:bg-darkBg border border-gray-300 dark:border-gray-700 outline-none">
+                </div>
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" id="annPinnedInput" checked class="accent-copper">
+                    <label for="annPinnedInput">تثبيت الإعلان في الواجهة الرئيسية</label>
+                </div>
+                <button type="submit" class="w-full py-2.5 rounded-xl bg-copper hover:bg-copper-dark text-darkBg font-bold text-sm">
+                    حفظ التعديلات
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- إشعار منبثق Toast -->
+    <div id="toast" class="fixed bottom-5 left-5 z-50 bg-darkCard text-white border border-copper px-4 py-3 rounded-xl shadow-2xl text-xs font-semibold flex items-center gap-2.5 transform translate-y-20 opacity-0 transition-all duration-300">
+        <i class="fa-solid fa-circle-info text-copper text-base"></i>
+        <span id="toastMsg"></span>
+    </div>
+
+    <!-- ==================== المنطق البرمجي الشامل (JavaScript) ==================== -->
+    <script>
+        // 1. تعريف الرتب وألوانها حسب البند التاسع والعاشر
+        const RANKS = {
+            president: { label: 'رئيس الموقع', css: 'rank-president', badge: '👑 رئيس الموقع', isAdmin: true },
+            superadmin: { label: 'سوبر آدمن', css: 'rank-superadmin', badge: '🛡️ سوبر آدمن', isAdmin: true },
+            admin: { label: 'آدمن', css: 'rank-admin', badge: '⚡ آدمن', isAdmin: true },
+            headmod: { label: 'مشرف عام', css: 'rank-headmod', badge: '🔷 مشرف عام', isMod: true },
+            mod: { label: 'مشرف', css: 'rank-mod', badge: '🌿 مشرف', isMod: true },
+            member: { label: 'عضو', css: 'rank-member', badge: '✒️ عضو', isMember: true }
+        };
+
+        // 2. قاعدة بيانات الأعضاء الافتراضية
+        let users = [
+            {
+                id: 'u1',
+                name: 'محمد عقاد',
+                country: 'سوريا',
+                joinDate: '2025-01-10',
+                rankKey: 'president',
+                messagesCount: 1420,
+                reactionsCount: 3890,
+                activeHours: 310,
+                badges: ['مدرب معتمد', 'شاعر متميز', 'عضو داعم للرابطة'],
+                bio: 'مدير هيئة التدريب والورش التطبيقية في الرابطة العربية للكُتّاب، شاعر وروائي.',
+                works: ['ديوان ساحر العينين', 'رواية أسرار المدينة المفقودة', 'مبادرة حرّر كتابك'],
+                interests: 'الشعر العمودي، السرد الروائي، التدريب الأدبي',
+                avatar: 'https://ui-avatars.com/api/?name=محمد+عقاد&background=C89B3C&color=121212&bold=true',
+                warnings: 0
+            },
+            {
+                id: 'u2',
+                name: 'علاء الجارحي',
+                country: 'مصر',
+                joinDate: '2025-01-10',
+                rankKey: 'superadmin',
+                messagesCount: 980,
+                reactionsCount: 2410,
+                activeHours: 245,
+                badges: ['عضو داعم للرابطة', 'ناقد أدبي'],
+                bio: 'رئيس مجلس إدارة الرابطة العربية للكُتّاب، باحث في الأدب العربي الحديث.',
+                works: ['دراسات في النقد المعاصر'],
+                interests: 'النقد الأدبي، إدارة المشاريع الثقافية',
+                avatar: 'https://ui-avatars.com/api/?name=علاء+الجارحي&background=E11D48&color=fff&bold=true',
+                warnings: 0
+            },
+            {
+                id: 'u3',
+                name: 'نداء شرادقة',
+                country: 'الأردن',
+                joinDate: '2025-02-04',
+                rankKey: 'admin',
+                messagesCount: 740,
+                reactionsCount: 1850,
+                activeHours: 190,
+                badges: ['روائي متميز', 'عضو الشهر'],
+                bio: 'المدير التنفيذي للرابطة العربية للكُتّاب وكاتبة روائية.',
+                works: ['رواية طائر الفينيق'],
+                interests: 'الرواية التاريخية، التنظيم الثقافي',
+                avatar: 'https://ui-avatars.com/api/?name=نداء+شرادقة&background=9333EA&color=fff&bold=true',
+                warnings: 0
+            },
+            {
+                id: 'u4',
+                name: 'كاترين أبو درغم',
+                country: 'لبنان',
+                joinDate: '2025-02-15',
+                rankKey: 'headmod',
+                messagesCount: 615,
+                reactionsCount: 1420,
+                activeHours: 165,
+                badges: ['شاعر متميز'],
+                bio: 'مديرة الأنشطة الثقافية والأدبية في الرابطة.',
+                works: ['همسات على ضفاف الحرف'],
+                interests: 'الأمسيات الشعرية، المسرح',
+                avatar: 'https://ui-avatars.com/api/?name=كاترين+أبو+درغم&background=1D4ED8&color=fff&bold=true',
+                warnings: 0
+            },
+            {
+                id: 'u5',
+                name: 'سحر صلاح',
+                country: 'السعودية',
+                joinDate: '2025-04-20',
+                rankKey: 'member',
+                messagesCount: 145,
+                reactionsCount: 320,
+                activeHours: 48,
+                badges: ['عضو الشهر'],
+                bio: 'كاتبة قصة قصيرة وخريجة ورشة مبادئ الكتابة الناجحة.',
+                works: ['مجموعة ظلال المساء'],
+                interests: 'القصة القصيرة، القراءة النقدية',
+                avatar: 'https://ui-avatars.com/api/?name=سحر+صلاح&background=333333&color=C89B3C&bold=true',
+                warnings: 0
+            }
+        ];
+
+        // المستخدم النشط حالياً
+        let currentUser = users[0];
+
+        // 3. بطاقات الإعلانات الأربع (البند الثاني)
+        let announcements = [
+            { tag: 'أبرز الفعاليات', title: 'الملتقى الشعري العربي السنوي', text: 'انطلاق الأمسيات المباشرة يوم الجمعة الساعة 9 مساءً.', pinned: true, icon: 'fa-calendar-star' },
+            { tag: 'آخر الأخبار', title: 'تخريج دفعة ورشة الكتابة الناجحة', text: 'اعتماد الشهادات الرسمية للمشاركين في الدفعة الثالثة.', pinned: true, icon: 'fa-newspaper' },
+            { tag: 'المسابقات', title: 'مسابقة القصة القصيرة الكبرى', text: 'باب التقديم مفتوح حتى نهاية الشهر بجوائز نشر معتمدة.', pinned: false, icon: 'fa-trophy' },
+            { tag: 'الإعلانات الرسمية', title: 'تحديث ميثاق الخصوصية والأمان', text: 'تفعيل التشفير الكامل للمراسلات الخاصة بنظام E2EE.', pinned: true, icon: 'fa-shield-halved' }
+        ];
+
+        // 4. الغرف الست الافتراضية (البند الخامس) + المحادثات الخاصة
+        let rooms = [
+            { id: 'r1', name: 'القاعة العامة', desc: 'الملتقى الجامع لأعضاء الرابطة العربية للكُتّاب والنقاشات الأدبية العامة', icon: 'fa-landmark', pinned: 'أهلاً بكم في رحاب الرابطة العربية للكُتّاب؛ الكلمة أمانة وارتقاء.' },
+            { id: 'r2', name: 'قاعة الشعر', desc: 'فضاء القصيدة العمودية والتفعيلة والمساجلات الشعرية', icon: 'fa-feather', pinned: 'شاركنا أبياتك مع ضبط التشكيل والبحر الشعري.' },
+            { id: 'r3', name: 'قاعة الرواية', desc: 'مناقشة تقنيات السرد وبناء الشخصيات والحبكة الروائية', icon: 'fa-book-open', pinned: 'مناقشة هذا الأسبوع: البناء الزمني في الرواية العربية.' },
+            { id: 'r4', name: 'قاعة النقد الأدبي', desc: 'قراءات تحليلية ونقدية موضوعية للنصوص والإصدارات', icon: 'fa-magnifying-glass-chart', pinned: 'النقد البناء يرتقي بالنص ويحترم شخص الكاتب.' },
+            { id: 'r5', name: 'قاعة الورش التدريبية', desc: 'متابعة المحاضرات والتطبيقات العملية لهيئة التدريب', icon: 'fa-chalkboard-user', pinned: 'يرجى رفع التكليفات التطبيقية بصيغة PDF.' },
+            { id: 'r6', name: 'قاعة الاستراحة', desc: 'حوارات ودية، ترشيحات كتب، وقهوة الصباح بين الأدباء', icon: 'fa-mug-hot', pinned: 'استراحة المحاربين بين فصول الكتابة.' }
+        ];
+
+        let privateChats = [
+            { id: 'dm_u2', withUserId: 'u2', name: 'علاء الجارحي', desc: 'محادثة خاصة مشفرة من طرف إلى طرف (E2EE)' },
+            { id: 'dm_u3', withUserId: 'u3', name: 'نداء شرادقة', desc: 'محادثة خاصة مشفرة من طرف إلى طرف (E2EE)' }
+        ];
+
+        let activeChannelId = 'r1';
+        let isPrivateChannel = false;
+
+        // 5. سجل الرسائل لكل قاعة
+        let messagesByChannel = {
+            'r1': [
+                {
+                    id: 'm1', userId: 'u2', time: '10:15 ص',
+                    text: 'مساء النور والجمال على جميع أدباء وشعراء الرابطة. سعداء بهذا التجمع العربي الراقي الذي يجمع الأقلام الجادة.',
+                    reactions: { '❤️': 12, '👏': 8, '🔥': 4 },
+                    replyTo: null, attachment: null
+                },
+                {
+                    id: 'm2', userId: 'u1', time: '10:18 ص',
+                    text: 'أهلاً بك أستاذ @علاء الجارحي، نعمل حالياً على تجهيز جدول الورش التدريبية للشهر القادم بالتنسيق مع @نداء شرادقة.',
+                    reactions: { '👍': 15, '⭐': 9 },
+                    replyTo: { user: 'علاء الجارحي', text: 'مساء النور والجمال على جميع أدباء وشعراء الرابطة...' },
+                    attachment: null
+                },
+                {
+                    id: 'm3', userId: 'u5', time: '10:24 ص',
+                    text: 'كل الشكر لإدارة الرابطة على هذه البيئة المحفزة، استفدت كثيراً من ورشة مبادئ الكتابة الناجحة.',
+                    reactions: { '❤️': 7, '📚': 5 },
+                    replyTo: null, attachment: null
+                }
+            ],
+            'r2': [
+                {
+                    id: 'm201', userId: 'u1', time: '09:30 م',
+                    text: 'يا ساحِرَ العَينَينِ رِفقاً بِالَّذي\nشاقَّتهُ أَطيافُ الهَوى فَتَحيَّرا\nساقَتهُ أَقدارُ الحَنينِ لِمَوضِعي\nفَغَدا القَصيدُ عَلى يَدَيهِ مُعَطَّرا',
+                    reactions: { '❤️': 24, '🔥': 18, '👏': 14 },
+                    replyTo: null, attachment: null, isPoetry: true
+                }
+            ],
+            'dm_u2': [
+                {
+                    id: 'dm1', userId: 'u2', time: '11:00 ص',
+                    text: 'أهلاً أستاذ محمد، هذه الرسالة مشفرة بالكامل ولا تظهر في سجلات الخادم لأي مطور أو مشرف.',
+                    reactions: { '👍': 1 },
+                    replyTo: null, attachment: null
+                }
+            ]
+        };
+
+        // 6. بيانات المكتبة الأدبية (البند السابع عشر)
+        let libraryWorks = [
+            { id: 'b1', title: 'أسرار المدينة المفقودة', author: 'محمد عقاد', category: 'رواية', rating: 4.9, reviews: 42, summary: 'رواية تجمع بين الغموض التاريخي والخيال الأدبي في رحلة البحث عن المخطوطات الضائعة.' },
+            { id: 'b2', title: 'طائر الفينيق', author: 'نداء شرادقة', category: 'رواية', rating: 4.8, reviews: 35, summary: 'ملحمة إنسانية حول الانبعاث من تحت رماد الأزمات وبناء الأمل بالكلمة.' },
+            { id: 'b3', title: 'ساحر العينين', author: 'محمد عقاد', category: 'ديوان شعري', rating: 5.0, reviews: 58, summary: 'مجموعة قصائد عمودية في الوجدان والغزل العفيف والحنين إلى الديار.' },
+            { id: 'b4', title: 'مدخل إلى النقد البنيوي', author: 'علاء الجارحي', category: 'مقال نقدي', rating: 4.7, reviews: 19, summary: 'دراسة تطبيقية في تفكيك النصوص السردية المعاصرة.' }
+        ];
+
+        // 7. بيانات الشكاوى والاقتراحات (البند الثامن)
+        let tickets = [
+            { id: 'TK-104', type: 'اقتراح تطوير', sender: 'سحر صلاح', accused: '-', desc: 'إضافة ميزة تصدير القصائد كبطاقات مصورة للمشاركة.', status: 'مقبول' },
+            { id: 'TK-105', type: 'شكوى', sender: 'كاترين أبو درغم', accused: 'حساب تجريبي', desc: 'إرسال روابط إعلانية خارجية في قاعة الاستراحة (مرفق لقطة شاشة).', status: 'قيد المراجعة' }
+        ];
+
+        // 8. الإشعارات (البند الثاني عشر)
+        let notifications = [
+            { text: 'أشار إليك @علاء الجارحي في القاعة العامة', time: 'منذ 3 دقائق', unread: true },
+            { text: 'تفاعل @نداء شرادقة بـ 🔥 على قصيدتك في قاعة الشعر', time: 'منذ 15 دقيقة', unread: true },
+            { text: 'إعلان إداري: تم اعتماد جدول الورش التدريبية', time: 'منذ ساعة', unread: true },
+            { text: 'رسالة خاصة جديدة مشفرة من علاء الجارحي', time: 'منذ ساعتين', unread: true }
+        ];
+
+        // 9. قائمة الكلمات المسيئة للفلترة التلقائية (البند الرابع عشر)
+        const BANNED_WORDS = ['شتيمة', 'نابية', 'عنصري', 'تحريض', 'بذيء'];
+
+        // متغيرات حالة الرد والمرفقات والصوت
+        let replyingTo = null;
+        let pendingAttachment = null;
+        let isMicOn = false;
+        let isHandRaised = false;
+        let isRecording = false;
+
+        // ==================== التهيئة عند تحميل الصفحة ====================
+        window.onload = () => {
+            renderAnnouncements();
+            renderSidebar();
+            renderMessages();
+            renderLibrary();
+            renderVoiceSession();
+            renderAdminPanel();
+            renderNotifications();
+            updateUserHeader();
+        };
+
+        // ==================== إدارة المظهر (ليلي / نهاري) ====================
+        function toggleTheme() {
+            const html = document.documentElement;
+            const icon = document.getElementById('themeIcon');
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                icon.className = 'fa-solid fa-moon';
+            } else {
+                html.classList.add('dark');
+                icon.className = 'fa-solid fa-sun';
+            }
+        }
+
+        // ==================== تبديل الواجهات الرئيسية ====================
+        function switchView(viewName) {
+            ['forum', 'library', 'voice', 'admin'].forEach(v => {
+                document.getElementById(`view-${v}`).classList.add('hidden');
+                const navBtn = document.getElementById(`nav-${v}`);
+                if (navBtn) {
+                    navBtn.classList.remove('bg-copper', 'text-darkBg');
+                    navBtn.classList.add('text-gray-600', 'dark:text-gray-300');
+                }
+            });
+
+            document.getElementById(`view-${viewName}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`nav-${viewName}`);
+            if (activeBtn) {
+                activeBtn.classList.add('bg-copper', 'text-darkBg');
+                activeBtn.classList.remove('text-gray-600', 'dark:text-gray-300');
+            }
+        }
+
+        // ==================== تبديل الدور للمعاينة (رئيس الموقع <-> عضو) ====================
+        function toggleRoleDemo() {
+            currentUser = currentUser.id === 'u1' ? users[4] : users[0];
+            updateUserHeader();
+            renderMessages();
+            renderAdminPanel();
+            showToast(`تم التبديل إلى حساب: ${currentUser.name} (${RANKS[currentUser.rankKey].label})`);
+        }
+
+        function updateUserHeader() {
+            const rank = RANKS[currentUser.rankKey];
+            document.getElementById('headerAvatar').src = currentUser.avatar;
+            const nameEl = document.getElementById('headerUserName');
+            nameEl.textContent = currentUser.name;
+            nameEl.className = `text-xs font-bold ${rank.css}`;
+            document.getElementById('headerUserRank').textContent = rank.label;
+            document.getElementById('roleSwitchLabel').textContent = `وضع: ${rank.label}`;
+
+            // إظهار أو إخفاء أزرار الإدارة حسب الصلاحية
+            const isStaff = rank.isAdmin || rank.isMod;
+            document.getElementById('editAnnouncementsBtn').style.display = rank.isAdmin ? 'inline-block' : 'none';
+            document.getElementById('addRoomBtn').style.display = rank.isAdmin ? 'flex' : 'none';
+            const adminNav = document.getElementById('nav-admin');
+            if (adminNav) adminNav.style.display = isStaff ? 'inline-block' : 'none';
+        }
+
+        // ==================== شريط الإعلانات العلوي ====================
+        function renderAnnouncements() {
+            const grid = document.getElementById('announcementsGrid');
+            grid.innerHTML = announcements.map((ann, idx) => `
+                <div class="bg-white dark:bg-darkCard border ${ann.pinned ? 'border-copper/50' : 'border-gray-200 dark:border-gray-800'} rounded-xl p-3 flex items-start gap-3 hover:border-copper transition">
+                    <div class="w-9 h-9 rounded-lg bg-copper/15 text-copper flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <i class="fa-solid ${ann.icon}"></i>
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <div class="flex items-center justify-between gap-1">
+                            <span class="text-[10px] font-bold text-copper uppercase">${ann.tag}</span>
+                            ${ann.pinned ? '<i class="fa-solid fa-thumbtack text-[10px] text-copper" title="مثبت"></i>' : ''}
+                        </div>
+                        <h4 class="text-xs font-bold truncate mt-0.5">${ann.title}</h4>
+                        <p class="text-[11px] text-gray-500 dark:text-gray-400 line-clamp-1 mt-0.5">${ann.text}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function loadAnnouncementToForm() {
+            const idx = document.getElementById('annSelect').value;
+            document.getElementById('annTitleInput').value = announcements[idx].title;
+            document.getElementById('annTextInput').value = announcements[idx].text;
+            document.getElementById('annPinnedInput').checked = announcements[idx].pinned;
+        }
+
+        function updateAnnouncement(e) {
+            e.preventDefault();
+            const idx = document.getElementById('annSelect').value;
+            announcements[idx].title = document.getElementById('annTitleInput').value;
+            announcements[idx].text = document.getElementById('annTextInput').value;
+            announcements[idx].pinned = document.getElementById('annPinnedInput').checked;
+            renderAnnouncements();
+            closeModal('announcementModal');
+            showToast('تم تحديث بطاقة الإعلان بنجاح');
+        }
+
+        // ==================== القائمة الجانبية والغرف ====================
+        function renderSidebar() {
+            const roomsList = document.getElementById('roomsList');
+            roomsList.innerHTML = rooms.map(r => {
+                const active = !isPrivateChannel && activeChannelId === r.id;
+                return `
+                    <li>
+                        <button onclick="selectChannel('${r.id}', false)" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition ${active ? 'bg-copper text-darkBg shadow-sm' : 'text-gray-700 dark:text-gray-300 hover:bg-lightCard dark:hover:bg-darkHover'}">
+                            <i class="fa-solid ${r.icon} w-5 text-center ${active ? 'text-darkBg' : 'text-copper'}"></i>
+                            <span class="truncate">${r.name}</span>
+                        </button>
+                    </li>
+                `;
+            }).join('');
+
+            const dmList = document.getElementById('dmList');
+            dmList.innerHTML = privateChats.map(dm => {
+                const active = isPrivateChannel && activeChannelId === dm.id;
+                return `
+                    <li>
+                        <button onclick="selectChannel('${dm.id}', true)" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition ${active ? 'bg-copper text-darkBg' : 'text-gray-600 dark:text-gray-300 hover:bg-lightCard dark:hover:bg-darkHover'}">
+                            <div class="flex items-center gap-2 truncate">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                <span class="truncate">${dm.name}</span>
+                            </div>
+                            <i class="fa-solid fa-lock text-[10px] opacity-70"></i>
+                        </button>
+                    </li>
+                `;
+            }).join('');
+        }
+
+        function selectChannel(id, isPrivate) {
+            activeChannelId = id;
+            isPrivateChannel = isPrivate;
+            cancelReply();
+            renderSidebar();
+
+            if (isPrivate) {
+                const dm = privateChats.find(d => d.id === id);
+                document.getElementById('activeRoomTitle').textContent = dm.name;
+                document.getElementById('activeRoomDesc').textContent = dm.desc;
+                document.getElementById('activeRoomIcon').innerHTML = '<i class="fa-solid fa-lock"></i>';
+                document.getElementById('e2eeRoomBadge').classList.remove('hidden');
+            } else {
+                const room = rooms.find(r => r.id === id);
+                document.getElementById('activeRoomTitle').textContent = room.name;
+                document.getElementById('activeRoomDesc').textContent = room.desc;
+                document.getElementById('activeRoomIcon').innerHTML = `<i class="fa-solid ${room.icon}"></i>`;
+                document.getElementById('pinnedMessageText').textContent = room.pinned;
+                document.getElementById('e2eeRoomBadge').classList.add('hidden');
+            }
+
+            switchView('forum');
+            renderMessages();
+        }
+
+        function createNewRoom(e) {
+            e.preventDefault();
+            const name = document.getElementById('newRoomName').value.trim();
+            const desc = document.getElementById('newRoomDesc').value.trim();
+            const newId = 'r' + (rooms.length + 1);
+            rooms.push({ id: newId, name, desc, icon: 'fa-comments', pinned: `مرحباً بكم في ${name}` });
+            renderSidebar();
+            selectChannel(newId, false);
+            closeModal('newRoomModal');
+            e.target.reset();
+            showToast(`تم إنشاء "${name}" بنجاح`);
+        }
+
+        // ==================== عرض الرسائل والتفاعلات السبعة ====================
+        function renderMessages() {
+            const container = document.getElementById('messagesContainer');
+            const msgs = messagesByChannel[activeChannelId] || [];
+            const myRank = RANKS[currentUser.rankKey];
+
+            if (msgs.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-16 text-gray-400">
+                        <i class="fa-solid fa-feather-pointed text-4xl text-copper/40 mb-3"></i>
+                        <p class="text-sm">لا توجد رسائل في هذه القاعة بعد. كن أول من يفتتح الحوار الأدبي!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const reactionTypes = ['👍', '❤️', '🔥', '👏', '😂', '📚', '⭐'];
+
+            container.innerHTML = msgs.map(m => {
+                const sender = users.find(u => u.id === m.userId) || users[0];
+                const rank = RANKS[sender.rankKey];
+                const isMine = sender.id === currentUser.id;
+                const canModerate = !isPrivateChannel && (myRank.isAdmin || myRank.isMod);
+
+                // تنسيق الإشارة @اسم_العضو
+                const formattedText = m.text.replace(/(@[\u0600-\u06FFa-zA-Z0-9_ ]+?)(?=[،.\s]|$)/g, '<span class="text-copper font-bold bg-copper/10 px-1 rounded">$1</span>');
+
+                return `
+                    <div class="group bg-white dark:bg-darkCard border border-gray-200/80 dark:border-gray-800 hover:border-copper/40 rounded-2xl p-4 transition fade-in">
+                        <!-- اقتباس الرد إن وجد -->
+                        ${m.replyTo ? `
+                            <div class="mb-2.5 pr-3 border-r-2 border-copper bg-lightCard/70 dark:bg-darkBg/70 p-2 rounded-lg text-xs text-gray-500 dark:text-gray-400">
+                                <span class="font-bold text-copper"><i class="fa-solid fa-reply ml-1"></i>${m.replyTo.user}:</span>
+                                <span class="truncate inline-block max-w-md align-bottom">${m.replyTo.text}</span>
+                            </div>
+                        ` : ''}
+
+                        <div class="flex items-start gap-3">
+                            <img src="${sender.avatar}" onclick="openProfileModal('${sender.id}')" class="w-10 h-10 rounded-full object-cover border border-copper/50 cursor-pointer flex-shrink-0" alt="${sender.name}">
+                            
+                            <div class="flex-1 min-w-0">
+                                <!-- رأس الرسالة: الاسم، الرتبة، الدولة، الوقت -->
+                                <div class="flex flex-wrap items-center justify-between gap-2 mb-1.5">
+                                    <div class="flex items-center gap-2">
+                                        <span onclick="openProfileModal('${sender.id}')" class="text-sm cursor-pointer hover:underline ${rank.css}">${sender.name}</span>
+                                        <span class="text-[10px] px-2 py-0.5 rounded-full bg-lightCard dark:bg-darkBg border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-300">
+                                            ${rank.badge}
+                                        </span>
+                                        <span class="text-[11px] text-gray-400 hidden sm:inline">• ${sender.country}</span>
+                                    </div>
+                                    
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-[11px] text-gray-400">${m.time}</span>
+                                        <!-- أزرار التحكم بالرسالة (رد، تعديل، حذف، تثبيت) -->
+                                        <div class="opacity-100 sm:opacity-0 group-hover:opacity-100 flex items-center gap-1 transition">
+                                            <button onclick="setReply('${m.id}')" title="رد على الرسالة" class="p-1 text-gray-400 hover:text-copper text-xs"><i class="fa-solid fa-reply"></i></button>
+                                            ${isMine ? `<button onclick="editMessage('${m.id}')" title="تعديل" class="p-1 text-gray-400 hover:text-copper text-xs"><i class="fa-solid fa-pen"></i></button>` : ''}
+                                            ${canModerate ? `<button onclick="pinMessage('${m.id}')" title="تثبيت في القاعة" class="p-1 text-gray-400 hover:text-copper text-xs"><i class="fa-solid fa-thumbtack"></i></button>` : ''}
+                                            ${(isMine || canModerate) ? `<button onclick="deleteMessage('${m.id}')" title="حذف" class="p-1 text-gray-400 hover:text-red-500 text-xs"><i class="fa-solid fa-trash"></i></button>` : ''}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- نص الرسالة -->
+                                <div class="${m.isPoetry ? 'font-serif text-lg leading-loose text-center bg-lightCard/50 dark:bg-darkBg/50 py-3 px-4 rounded-xl border border-copper/20 my-2' : 'text-sm leading-relaxed'} whitespace-pre-line break-words">
+                                    ${formattedText}
+                                </div>
+
+                                <!-- المرفقات إن وجدت -->
+                                ${m.attachment ? `
+                                    <div class="mt-2 inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-copper/10 border border-copper/30 text-xs text-copper font-semibold">
+                                        <i class="fa-solid ${m.attachment.type === 'audio' ? 'fa-waveform-lines' : 'fa-file-pdf'}"></i>
+                                        <span>${m.attachment.name}</span>
+                                    </div>
+                                ` : ''}
+
+                                <!-- شريط التفاعلات السبعة (البند الحادي عشر) -->
+                                <div class="flex flex-wrap items-center gap-1.5 mt-3 pt-2 border-t border-gray-100 dark:border-gray-800/80">
+                                    ${reactionTypes.map(emoji => {
+                                        const count = (m.reactions && m.reactions[emoji]) || 0;
+                                        return `
+                                            <button onclick="toggleReaction('${m.id}', '${emoji}')" class="px-2 py-0.5 rounded-full text-xs flex items-center gap-1 transition ${count > 0 ? 'bg-copper/15 border border-copper/40 text-copper font-bold' : 'bg-lightCard dark:bg-darkBg text-gray-400 hover:text-copper opacity-70 hover:opacity-100'}">
+                                                <span>${emoji}</span>
+                                                ${count > 0 ? `<span>${count}</span>` : ''}
+                                            </button>
+                                        `;
+                                    }).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // ==================== إرسال ومعالجة الرسائل + فلترة الكلمات المسيئة ====================
+        function sendMessage(e) {
+            e.preventDefault();
+            const input = document.getElementById('messageInput');
+            const rawText = input.value.trim();
+            if (!rawText && !pendingAttachment) return;
+
+            // فحص فلتر الكلمات المسيئة (البند الرابع عشر)
+            const hasProfanity = BANNED_WORDS.some(word => rawText.includes(word));
+            if (hasProfanity) {
+                currentUser.warnings = (currentUser.warnings || 0) + 1;
+                const penalty = currentUser.warnings === 1 ? 'الإنذار الأول' : currentUser.warnings === 2 ? 'كتم لمدة ساعة' : 'كتم يوم وإحالة للإدارة';
+                showToast(`⚠️ تم حجب الرسالة لمخالفتها ميثاق الرابطة. العقوبة المطبقة: ${penalty}`);
+                input.value = '';
+                return;
+            }
+
+            if (!messagesByChannel[activeChannelId]) {
+                messagesByChannel[activeChannelId] = [];
+            }
+
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+
+            messagesByChannel[activeChannelId].push({
+                id: 'm' + Date.now(),
+                userId: currentUser.id,
+                time: timeStr,
+                text: rawText || 'مرفق أدبي',
+                reactions: {},
+                replyTo: replyingTo,
+                attachment: pendingAttachment,
+                isPoetry: activeChannelId === 'r2' && rawText.includes('\n')
+            });
+
+            currentUser.messagesCount++;
+            input.value = '';
+            pendingAttachment = null;
+            document.getElementById('attachedFileBadge').classList.add('hidden');
+            cancelReply();
+            renderMessages();
+        }
+
+        function toggleReaction(msgId, emoji) {
+            const msgs = messagesByChannel[activeChannelId] || [];
+            const msg = msgs.find(m => m.id === msgId);
+            if (!msg) return;
+            if (!msg.reactions) msg.reactions = {};
+            msg.reactions[emoji] = (msg.reactions[emoji] || 0) + 1;
+            renderMessages();
+        }
+
+        function setReply(msgId) {
+            const msg = (messagesByChannel[activeChannelId] || []).find(m => m.id === msgId);
+            if (!msg) return;
+            const sender = users.find(u => u.id === msg.userId);
+            replyingTo = { user: sender.name, text: msg.text };
+            document.getElementById('replyTargetUser').textContent = sender.name;
+            document.getElementById('replyTargetText').textContent = msg.text;
+            document.getElementById('replyPreviewBar').classList.remove('hidden');
+            document.getElementById('messageInput').focus();
+        }
+
+        function cancelReply() {
+            replyingTo = null;
+            document.getElementById('replyPreviewBar').classList.add('hidden');
+        }
+
+        function deleteMessage(msgId) {
+            messagesByChannel[activeChannelId] = (messagesByChannel[activeChannelId] || []).filter(m => m.id !== msgId);
+            renderMessages();
+            showToast('تم حذف الرسالة');
+        }
+
+        function editMessage(msgId) {
+            const msg = (messagesByChannel[activeChannelId] || []).find(m => m.id === msgId);
+            if (!msg) return;
+            const updated = prompt('تعديل نص الرسالة:', msg.text);
+            if (updated !== null && updated.trim() !== '') {
+                msg.text = updated.trim() + ' (معدّلة)';
+                renderMessages();
+            }
+        }
+
+        function pinMessage(msgId) {
+            const msg = (messagesByChannel[activeChannelId] || []).find(m => m.id === msgId);
+            const room = rooms.find(r => r.id === activeChannelId);
+            if (msg && room) {
+                room.pinned = msg.text;
+                document.getElementById('pinnedMessageText').textContent = msg.text;
+                showToast('تم تثبيت الرسالة في أعلى القاعة');
+            }
+        }
+
+        // ==================== الذكر @ والإيموجي والمرفقات ====================
+        function handleInputKeyup(e) {
+            const val = e.target.value;
+            const popup = document.getElementById('mentionPopup');
+            if (val.endsWith('@')) {
+                const list = document.getElementById('mentionList');
+                list.innerHTML = users.map(u => `
+                    <button type="button" onclick="selectMention('${u.name}')" class="w-full text-right px-2 py-1.5 rounded hover:bg-copper/20 flex items-center gap-2">
+                        <img src="${u.avatar}" class="w-5 h-5 rounded-full">
+                        <span class="font-semibold">${u.name}</span>
+                    </button>
+                `).join('');
+                popup.classList.remove('hidden');
+            } else {
+                popup.classList.add('hidden');
+            }
+        }
+
+        function selectMention(name) {
+            const input = document.getElementById('messageInput');
+            input.value += name + ' ';
+            document.getElementById('mentionPopup').classList.add('hidden');
+            input.focus();
+        }
+
+        function insertEmoji(emoji) {
+            const input = document.getElementById('messageInput');
+            input.value += emoji;
+            document.getElementById('emojiPicker').classList.add('hidden');
+            input.focus();
+        }
+
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            pendingAttachment = { type: 'file', name: file.name };
+            const badge = document.getElementById('attachedFileBadge');
+            badge.textContent = `📎 ${file.name}`;
+            badge.classList.remove('hidden');
+        }
+
+        function simulateVoiceNote() {
+            pendingAttachment = { type: 'audio', name: 'تسجيل_صوتي_أدبي (0:18).mp3' };
+            const badge = document.getElementById('attachedFileBadge');
+            badge.textContent = '🎙️ رسالة صوتية جاهزة للإرسال';
+            badge.classList.remove('hidden');
+        }
+
+        // ==================== الملف الشخصي والأوسمة (البند الرابع والثامن عشر) ====================
+        function openProfileModal(userId) {
+            const u = users.find(x => x.id === userId) || currentUser;
+            const rank = RANKS[u.rankKey];
+            const content = document.getElementById('profileModalContent');
+
+            content.innerHTML = `
+                <div class="text-center">
+                    <img src="${u.avatar}" class="w-20 h-20 rounded-full mx-auto border-2 border-copper shadow-lg object-cover">
+                    <h3 class="text-xl font-bold mt-3 ${rank.css}">${u.name}</h3>
+                    <div class="text-xs text-gray-400 mt-0.5">${rank.badge} • ${u.country} • انضم في ${u.joinDate}</div>
+                </div>
+
+                <!-- إحصائيات النشاط الحقيقي -->
+                <div class="grid grid-cols-3 gap-2 my-5 text-center bg-lightCard dark:bg-darkBg p-3 rounded-xl border border-gray-200 dark:border-gray-800">
+                    <div>
+                        <div class="text-base font-bold text-copper">${u.messagesCount}</div>
+                        <div class="text-[11px] text-gray-400">الرسائل</div>
+                    </div>
+                    <div>
+                        <div class="text-base font-bold text-copper">${u.reactionsCount}</div>
+                        <div class="text-[11px] text-gray-400">التفاعلات</div>
+                    </div>
+                    <div>
+                        <div class="text-base font-bold text-copper">${u.activeHours} س</div>
+                        <div class="text-[11px] text-gray-400">ساعات النشاط</div>
+                    </div>
+                </div>
+
+                <!-- الأوسمة والشارات -->
+                <div class="mb-4">
+                    <div class="text-xs font-bold text-copper mb-2">الأوسمة والشارات الممنوحة</div>
+                    <div class="flex flex-wrap gap-1.5">
+                        ${u.badges.map(b => `<span class="px-2.5 py-1 rounded-lg bg-copper/15 border border-copper/40 text-copper text-xs font-semibold"><i class="fa-solid fa-award ml-1"></i>${b}</span>`).join('')}
+                    </div>
+                </div>
+
+                <!-- النبذة والأعمال الأدبية والاهتمامات -->
+                <div class="space-y-3 text-xs border-t border-gray-200 dark:border-gray-800 pt-4">
+                    <div>
+                        <span class="font-bold text-gray-400 block mb-0.5">نبذة شخصية:</span>
+                        <p class="leading-relaxed">${u.bio}</p>
+                    </div>
+                    <div>
+                        <span class="font-bold text-gray-400 block mb-0.5">الأعمال الأدبية:</span>
+                        <ul class="list-disc list-inside text-copper font-semibold">
+                            ${u.works.map(w => `<li>${w}</li>`).join('')}
+                        </ul>
+                    </div>
+                    <div>
+                        <span class="font-bold text-gray-400 block mb-0.5">الاهتمامات:</span>
+                        <p>${u.interests}</p>
+                    </div>
+                </div>
+            `;
+
+            openModal('profileModal');
+        }
+
+        // ==================== المكتبة الأدبية (البند السابع عشر) ====================
+        function renderLibrary() {
+            const query = (document.getElementById('librarySearch')?.value || '').trim();
+            const cat = document.getElementById('libraryCategoryFilter')?.value || 'all';
+            const grid = document.getElementById('libraryGrid');
+
+            const filtered = libraryWorks.filter(w => {
+                const matchCat = cat === 'all' || w.category === cat;
+                const matchQuery = !query || w.title.includes(query) || w.author.includes(query);
+                return matchCat && matchQuery;
+            });
+
+            grid.innerHTML = filtered.map(w => `
+                <div class="bg-white dark:bg-darkCard border border-gray-200 dark:border-gray-800 hover:border-copper rounded-2xl p-5 flex flex-col justify-between transition">
+                    <div>
+                        <div class="flex items-center justify-between text-xs mb-2">
+                            <span class="px-2.5 py-0.5 rounded-full bg-copper/15 text-copper font-bold">${w.category}</span>
+                            <span class="text-amber-400 font-bold"><i class="fa-solid fa-star ml-1"></i>${w.rating} (${w.reviews})</span>
+                        </div>
+                        <h3 class="text-lg font-bold font-serif text-copper mb-1">${w.title}</h3>
+                        <div class="text-xs text-gray-400 mb-3">بقلم: <strong class="text-gray-600 dark:text-gray-200">${w.author}</strong></div>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed mb-4">${w.summary}</p>
+                    </div>
+                    <div class="flex items-center gap-2 pt-3 border-t border-gray-100 dark:border-gray-800">
+                        <button onclick="showToast('جاري فتح نسخة القراءة المحمية لـ: ${w.title}')" class="flex-1 py-2 rounded-xl bg-copper text-darkBg font-bold text-xs hover:bg-copper-dark transition">
+                            <i class="fa-solid fa-book-open ml-1"></i>قراءة العمل
+                        </button>
+                        <button onclick="rateWork('${w.id}')" class="px-3 py-2 rounded-xl bg-lightCard dark:bg-darkBg hover:text-copper text-xs border border-gray-200 dark:border-gray-700 transition">
+                            <i class="fa-solid fa-star"></i> تقييم
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function publishNewWork(e) {
+            e.preventDefault();
+            libraryWorks.unshift({
+                id: 'b' + Date.now(),
+                title: document.getElementById('workTitle').value,
+                author: currentUser.name,
+                category: document.getElementById('workCategory').value,
+                rating: 5.0,
+                reviews: 1,
+                summary: document.getElementById('workSummary').value
+            });
+            renderLibrary();
+            closeModal('publishBookModal');
+            e.target.reset();
+            showToast('تم نشر عملك في المكتبة الأدبية بنجاح');
+        }
+
+        function rateWork(id) {
+            const w = libraryWorks.find(x => x.id === id);
+            if (w) {
+                w.reviews++;
+                renderLibrary();
+                showToast(`شكراً لتقييمك عمل "${w.title}"`);
+            }
+        }
+
+        // ==================== الجلسات الصوتية المباشرة (البند التاسع عشر) ====================
+        function renderVoiceSession() {
+            const speakers = users.slice(0, 3);
+            document.getElementById('speakersGrid').innerHTML = speakers.map((s, idx) => `
+                <div class="flex flex-col items-center">
+                    <div class="relative">
+                        <img src="${s.avatar}" class="w-16 h-16 rounded-full object-cover border-2 border-copper ${idx === 0 ? 'speaking-ring' : ''}">
+                        <span class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-darkCard border border-copper text-copper text-[10px] flex items-center justify-center">
+                            <i class="fa-solid ${idx === 0 ? 'fa-microphone' : 'fa-microphone-slash text-gray-400'}"></i>
+                        </span>
+                    </div>
+                    <div class="text-xs font-bold mt-2 ${RANKS[s.rankKey].css}">${s.name}</div>
+                    <div class="text-[10px] text-gray-400">${RANKS[s.rankKey].label}</div>
+                </div>
+            `).join('');
+
+            const listeners = [users[3], users[4]];
+            document.getElementById('listenersGrid').innerHTML = listeners.map(l => `
+                <div class="flex flex-col items-center">
+                    <img src="${l.avatar}" class="w-12 h-12 rounded-full object-cover border border-gray-600">
+                    <div class="text-[11px] font-semibold mt-1.5 truncate max-w-[80px]">${l.name}</div>
+                </div>
+            `).join('');
+        }
+
+        function toggleMic() {
+            isMicOn = !isMicOn;
+            document.getElementById('micIcon').className = isMicOn ? 'fa-solid fa-microphone text-emerald-500' : 'fa-solid fa-microphone-slash text-red-500';
+            document.getElementById('micLabel').textContent = isMicOn ? 'الميكروفون مفتوح' : 'الميكروفون مكتوم';
+        }
+
+        function toggleRaiseHand() {
+            isHandRaised = !isHandRaised;
+            document.getElementById('handRaisedStatus').classList.toggle('hidden', !isHandRaised);
+            showToast(isHandRaised ? 'تم رفع اليد لطلب المداخلة الصوتية' : 'تم إلغاء رفع اليد');
+        }
+
+        function toggleRecording() {
+            if (!RANKS[currentUser.rankKey].isAdmin) {
+                showToast('تسجيل الجلسات متاح بصلاحية الإدارة فقط');
+                return;
+            }
+            isRecording = !isRecording;
+            document.getElementById('recordBtnText').textContent = isRecording ? 'جاري التسجيل... (إيقاف)' : 'بدء تسجيل الجلسة';
+            showToast(isRecording ? 'بدأ التسجيل السحابي الآمن للجلسة الصوتية' : 'تم حفظ تسجيل الجلسة في أرشيف الإدارة');
+        }
+
+        // ==================== لوحة الإدارة وتذاكر الشكاوى ====================
+        function renderAdminPanel() {
+            const tbody = document.getElementById('adminUsersTable');
+            const canAssignRanks = currentUser.rankKey === 'president' || currentUser.rankKey === 'superadmin';
+
+            tbody.innerHTML = users.map(u => {
+                const rank = RANKS[u.rankKey];
+                return `
+                    <tr class="hover:bg-lightCard/50 dark:hover:bg-darkHover/50">
+                        <td class="p-3 font-bold ${rank.css}">${u.name}</td>
+                        <td class="p-3">${u.country}</td>
+                        <td class="p-3">${rank.badge}</td>
+                        <td class="p-3">${u.activeHours} ساعة</td>
+                        <td class="p-3">
+                            ${canAssignRanks && u.rankKey !== 'president' ? `
+                                <select onchange="changeUserRank('${u.id}', this.value)" class="p-1.5 rounded bg-lightCard dark:bg-darkBg border border-gray-300 dark:border-gray-700 outline-none">
+                                    <option value="member" ${u.rankKey === 'member' ? 'selected' : ''}>عضو</option>
+                                    <option value="mod" ${u.rankKey === 'mod' ? 'selected' : ''}>مشرف</option>
+                                    <option value="headmod" ${u.rankKey === 'headmod' ? 'selected' : ''}>مشرف عام</option>
+                                    <option value="admin" ${u.rankKey === 'admin' ? 'selected' : ''}>آدمن</option>
+                                    <option value="superadmin" ${u.rankKey === 'superadmin' ? 'selected' : ''}>سوبر آدمن</option>
+                                </select>
+                            ` : '<span class="text-gray-400">محمي</span>'}
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            const ticketsContainer = document.getElementById('ticketsList');
+            ticketsContainer.innerHTML = tickets.map((t, i) => `
+                <div class="p-3.5 rounded-xl bg-lightCard dark:bg-darkBg border border-gray-200 dark:border-gray-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="font-bold text-copper">${t.id}</span>
+                            <span class="px-2 py-0.5 rounded bg-copper/15 text-copper font-semibold">${t.type}</span>
+                            <span class="text-gray-400">من: ${t.sender}</span>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-300">${t.desc}</p>
+                    </div>
+                    <select onchange="updateTicketStatus(${i}, this.value)" class="p-2 rounded-lg bg-white dark:bg-darkCard border border-gray-300 dark:border-gray-700 font-bold outline-none">
+                        <option ${t.status === 'قيد المراجعة' ? 'selected' : ''}>قيد المراجعة</option>
+                        <option ${t.status === 'بانتظار الرد' ? 'selected' : ''}>بانتظار الرد</option>
+                        <option ${t.status === 'مقبول' ? 'selected' : ''}>مقبول</option>
+                        <option ${t.status === 'مرفوض' ? 'selected' : ''}>مرفوض</option>
+                        <option ${t.status === 'تم الحل' ? 'selected' : ''}>تم الحل</option>
+                    </select>
+                </div>
+            `).join('');
+        }
+
+        function changeUserRank(userId, newRank) {
+            const u = users.find(x => x.id === userId);
+            if (u) {
+                u.rankKey = newRank;
+                renderAdminPanel();
+                renderMessages();
+                showToast(`تم تحديث رتبة ${u.name} إلى ${RANKS[newRank].label}`);
+            }
+        }
+
+        function updateTicketStatus(index, newStatus) {
+            tickets[index].status = newStatus;
+            showToast(`تم تحديث حالة التذكرة ${tickets[index].id} إلى: ${newStatus}`);
+        }
+
+        // ==================== تقديم الشكاوى والاقتراحات ====================
+        function toggleComplaintFields() {
+            const isComplaint = document.getElementById('ticketType').value === 'شكوى';
+            document.getElementById('accusedField').style.display = isComplaint ? 'block' : 'none';
+            document.getElementById('evidenceField').style.display = isComplaint ? 'block' : 'none';
+        }
+
+        function submitTicket(e) {
+            e.preventDefault();
+            tickets.unshift({
+                id: 'TK-' + Math.floor(106 + Math.random() * 90),
+                type: document.getElementById('ticketType').value,
+                sender: currentUser.name,
+                accused: document.getElementById('ticketAccused').value || '-',
+                desc: document.getElementById('ticketDesc').value,
+                status: 'قيد المراجعة'
+            });
+            renderAdminPanel();
+            closeModal('reportModal');
+            e.target.reset();
+            showToast('تم إرسال تذكرتك بنجاح، يمكنك متابعة حالتها عبر الإشعارات');
+        }
+
+        // ==================== الإشعارات والنوافذ المساعدة ====================
+        function renderNotifications() {
+            const list = document.getElementById('notifList');
+            list.innerHTML = notifications.map(n => `
+                <div class="p-2 rounded-lg ${n.unread ? 'bg-copper/10 border-r-2 border-copper' : 'bg-lightCard/50 dark:bg-darkBg/50'}">
+                    <div class="font-semibold">${n.text}</div>
+                    <div class="text-[10px] text-gray-400 mt-0.5">${n.time}</div>
+                </div>
+            `).join('');
+        }
+
+        function clearNotifications() {
+            notifications.forEach(n => n.unread = false);
+            document.getElementById('notifBadge').classList.add('hidden');
+            renderNotifications();
+        }
+
+        function openModal(id) {
+            if (id === 'announcementModal') loadAnnouncementToForm();
+            const el = document.getElementById(id);
+            el.classList.remove('hidden');
+            el.classList.add('flex');
+        }
+
+        function closeModal(id) {
+            const el = document.getElementById(id);
+            el.classList.add('hidden');
+            el.classList.remove('flex');
+        }
+
+        function toggleDropdown(id) {
+            document.getElementById(id).classList.toggle('hidden');
+        }
+
+        function toggleMobileSidebar() {
+            const sb = document.getElementById('sidebar');
+            sb.classList.toggle('translate-x-full');
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3500);
+        }
+
+        // محاكاة تسجيل الدخول عبر Google
+        function toggleAuthModal(show) {
+            const m = document.getElementById('authModal');
+            m.classList.toggle('hidden', !show);
+        }
+        function simulateGoogleAuth() {
+            document.getElementById('googleStep1').classList.add('hidden');
+            document.getElementById('googleStep2').classList.remove('hidden');
+        }
+        function completeRegistration(e) {
+            e.preventDefault();
+            toggleAuthModal(false);
+            showToast('تم تسجيل الدخول عبر Google بنجاح');
+        }
+    </script>
+</body>
+</html>
